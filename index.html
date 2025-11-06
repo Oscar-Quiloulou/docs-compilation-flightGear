@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Documentation FlightGear - Compilation Manuelle</title>
+  <style>
+    body { font-family: sans-serif; max-width: 900px; margin: auto; padding: 2em; background: #f9f9f9; }
+    h1, h2, h3 { color: #333; }
+    code { background: #eee; padding: 2px 4px; border-radius: 4px; }
+    pre { background: #eee; padding: 1em; border-radius: 6px; overflow-x: auto; }
+    ul { margin-left: 1em; }
+  </style>
+</head>
+<body>
+  <h1>📘 Documentation Technique : Compilation Manuelle de FlightGear</h1>
+
+  <h2>🧭 Objectif</h2>
+  <p>Compiler FlightGear à partir du code source, sans privilèges root, dans un environnement Linux ou GitHub Codespaces.</p>
+
+  <h2>📁 Arborescence recommandée</h2>
+  <pre><code>flightgear/
+├── flightgear/         # Source FlightGear
+├── simgear/            # Source SimGear
+├── fgdata/             # Données du simulateur
+├── openscenegraph/     # Fork OSG compatible FG
+</code></pre>
+
+  <h2>🧰 Prérequis</h2>
+  <h3>Dépendances système (si sudo dispo)</h3>
+  <pre><code>sudo apt update && sudo apt install -y \
+  build-essential cmake libopenscenegraph-dev libopenthreads-dev \
+  libpng-dev libgl1-mesa-dev libboost-dev libopenal-dev libcurl4-openssl-dev \
+  qtbase5-dev qttools5-dev libqt5svg5-dev libplib-dev libnvtt-dev
+</code></pre>
+
+  <h3>Dépôts à cloner</h3>
+  <pre><code>git clone https://gitlab.com/flightgear/openscenegraph.git
+git clone https://github.com/FlightGear/simgear.git
+git clone https://github.com/FlightGear/flightgear.git
+git clone https://github.com/FlightGear/fgdata.git
+</code></pre>
+
+  <h2>🔧 Étapes de compilation</h2>
+  <h3>1. OpenSceneGraph (fork FG)</h3>
+  <pre><code>cd openscenegraph
+mkdir build && cd build
+cmake .. \
+  -DCMAKE_BUILD_TYPE=Release \
+  -DCMAKE_INSTALL_PREFIX=$HOME/osg-fg-install \
+  -DNVTT_FOUND=FALSE \
+  -DNVTT_INCLUDE_DIR="" \
+  -DNVTT_LIBRARY="" \
+  -DNVTHREAD_LIBRARY_RELEASE=""
+make -j2
+make install
+</code></pre>
+
+  <h3>2. SimGear</h3>
+  <pre><code>cd ../../simgear
+mkdir build && cd build
+cmake .. \
+  -DCMAKE_BUILD_TYPE=Release \
+  -DCMAKE_INSTALL_PREFIX=$HOME/simgear-install \
+  -DCMAKE_PREFIX_PATH="$HOME/osg-fg-install"
+make -j2
+make install
+</code></pre>
+
+  <h3>3. FlightGear</h3>
+  <pre><code>cd ../../flightgear
+mkdir build && cd build
+cmake .. \
+  -DSIMGEAR_SOURCE_DIR=../../simgear \
+  -DFG_DATA_DIR=../../fgdata \
+  -DCMAKE_BUILD_TYPE=Release \
+  -DCMAKE_PREFIX_PATH="$HOME/simgear-install;$HOME/osg-fg-install"
+make -j2
+</code></pre>
+
+  <h2>🚀 Lancement du simulateur</h2>
+  <pre><code>./fgfs --fg-root=../../fgdata</code></pre>
+  <p><strong>Options utiles :</strong></p>
+  <ul>
+    <li><code>--aircraft=ufo</code> : avion libre</li>
+    <li><code>--airport=LFPG</code> : départ à Roissy</li>
+    <li><code>--enable-fullscreen</code> : plein écran</li>
+    <li><code>--httpd=5500</code> : activer carte web (<a href="http://localhost:5500">localhost:5500</a>)</li>
+  </ul>
+
+  <h2>🗺️ Carte du monde réel</h2>
+  <ul>
+    <li>Scènes HD : <a href="https://flyawaysimulation.com/downloads/files/24740/">FlyAway Simulation</a></li>
+    <li>Bâtiments et routes : <a href="https://merspieler.alwaysdata.net/osm2city">OSM2City</a></li>
+    <li>Carte interactive : <code>--httpd=5500</code> + navigateur sur <a href="http://localhost:5500">localhost:5500</a></li>
+  </ul>
+
+  <h2>📦 Transfert vers un autre PC</h2>
+  <pre><code>zip -r flightgear_package.zip flightgear/build simgear-install fgdata</code></pre>
+  <p>Décompresse sur ton PC et lance :</p>
+  <pre><code>cd build
+./fgfs --fg-root=../fgdata</code></pre>
+</body>
+</html>
