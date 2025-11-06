@@ -46,6 +46,37 @@
       border-top: 1px solid #444;
       margin: 2em 0;
     }
+    .cockpit {
+      background:#111;
+      padding:1em;
+      border-radius:10px;
+      box-shadow:0 0 20px #00ffe0;
+      margin-top: 3em;
+    }
+    .cockpit label {
+      display: block;
+      margin-top: 1em;
+    }
+    .cockpit input, .cockpit select {
+      background: #1a1c23;
+      color: #00ff88;
+      border: 1px solid #00ffe0;
+      padding: 0.4em;
+      border-radius: 4px;
+      width: 200px;
+    }
+    .cockpit button {
+      background:#00ffe0;
+      color:#000;
+      padding:0.5em 1em;
+      border:none;
+      border-radius:5px;
+      margin-top: 1em;
+      cursor: pointer;
+    }
+    .cockpit button:hover {
+      background: #00ffcc;
+    }
   </style>
 </head>
 <body>
@@ -134,6 +165,41 @@ make -j2
   <pre><code>zip -r flightgear_package.zip flightgear/build simgear-install fgdata</code></pre>
   <pre><code>cd build
 ./fgfs --fg-root=../fgdata</code></pre>
+
+  <div class="cockpit">
+    <h2>🛫 Cockpit interactif</h2>
+    <label for="aircraft">Avion :</label>
+    <select id="aircraft">
+      <option value="ufo">UFO</option>
+      <option value="c172p">Cessna 172</option>
+      <option value="b777">Boeing 777</option>
+    </select>
+
+    <label for="airport">Aéroport :</label>
+    <input type="text" id="airport" value="LFPG">
+
+    <label for="fullscreen">Plein écran :</label>
+    <input type="checkbox" id="fullscreen" checked>
+
+    <label for="map">Carte web :</label>
+    <input type="checkbox" id="map" checked>
+
+    <button onclick="generateCommand()">🎮 Générer la commande</button>
+
+    <pre id="output"></pre>
+  </div>
+
+  <script>
+    function generateCommand() {
+      const aircraft = document.getElementById("aircraft").value;
+      const airport = document.getElementById("airport").value;
+      const fullscreen = document.getElementById("fullscreen").checked ? "--enable-fullscreen " : "";
+      const map = document.getElementById("map").checked ? "--httpd=5500 " : "";
+
+      const cmd = `./fgfs --fg-root=../../fgdata --aircraft=${aircraft} --airport=${airport} ${fullscreen}${map}`;
+      document.getElementById("output").textContent = cmd;
+    }
+  </script>
 
   <hr>
   <p><em>Doc rédigée par Dimitri & Copilot — pour les pilotes qui compilent à la main 🧑‍✈️💻</em></p>
