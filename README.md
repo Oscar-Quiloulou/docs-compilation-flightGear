@@ -5,7 +5,12 @@ Inclut les binaires, les librairies SimGear, et les données fgdata.
 
 ## 📁 Structure du projet
 
-flightgear/ ├── build/ # Contient le binaire fgfs ├── CMakeModules/ # Modules CMake ├── src/ # Code source FlightGear simgear-install/ # Librairies SimGear compilées fgdata/ # Données du simulateur (avions, scènes, météo)
+flightgear/ 
+├── build/ # Contient le binaire fgfs 
+├── CMakeModules/ # Modules CMake 
+├── src/ # Code source FlightGear 
+simgear-install/ # Librairies SimGear compilées 
+fgdata/ # Données du simulateur (avions, scènes, météo)
 
 Code
 
