@@ -12,8 +12,6 @@ flightgear/
 simgear-install/ # Librairies SimGear compilées 
 fgdata/ # Données du simulateur (avions, scènes, météo)
 
-Code
-
 ## 🚀 Lancement du simulateur
 
 ```bash
